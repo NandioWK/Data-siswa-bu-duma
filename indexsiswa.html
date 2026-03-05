@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="siswa.css">
+</head>
+<body>
+
+    <h2 class="judul-halaman">data siswa</h2>
+
+    <table class="tabel-input">
+        <tr>
+            <td><label for="inputNis">NIS</label></td>
+            <td><input type="number" id="inputNis" placeholder="Masukkan NIS"></td>
+        </tr>
+        <tr>
+            <td><label for="inputNama">Nama Siswa</label></td>
+            <td><input type="text" id="inputNama" placeholder="Masukkan nama siswa"></td>
+        </tr>
+        <tr>
+            <td><label for="inputRombel">Rombel</label></td>
+            <td><input type="text" id="inputRombel" placeholder="Masukkan kelas/rombel"></td>
+        </tr>
+        <tr>
+            <td><label for="inputNilai">Nilai</label></td>
+            <td><input type="number" id="inputNilai" placeholder="Masukkan nilai"></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <button class="tombol-kirim" onclick="tambahDataSiswa()">Simpan Data</button>
+            </td>
+        </tr>
+    </table>
+
+    <div class="area-daftar">
+        <h3>Daftar Siswa Terdaftar</h3>
+        <hr>
+        <div id="wadahDaftar">
+            </div>
+    </div>
+
+    <script>
+        var kumpulanSiswa = [];
+
+        function tambahDataSiswa() {
+
+            var nomorInduk = document.getElementById("inputNis").value;
+            var namaLengkap = document.getElementById("inputNama").value;
+            var rombelSiswa = document.getElementById("inputRombel").value;
+            var nilaiSiswa = document.getElementById("inputNilai").value;
+
+            if (!nomorInduk || !namaLengkap || !nilaiSiswa) {
+                alert("Harap lengkapi semua data!");
+                return;
+            }
+
+            var angkaNilai = parseInt(nilaiSiswa);
+            var peringkatNilai = "";
+
+            if (angkaNilai >= 90) peringkatNilai = "A";
+            else if (angkaNilai >= 80) peringkatNilai = "B";
+            else if (angkaNilai >= 70) peringkatNilai = "C";
+            else if (angkaNilai >= 60) peringkatNilai = "D";
+            else peringkatNilai = "E";
+
+            var dataBaru = {
+                nis: nomorInduk,
+                nama: namaLengkap,
+                rombel: rombelSiswa,
+                nilai: angkaNilai,
+                peringkat: peringkatNilai,
+                keterangan: angkaNilai >= 75 ? "Lulus" : "Tidak Lulus"
+            };
+
+            kumpulanSiswa.push(dataBaru);
+
+            resetInput();
+
+            gambarUlangDaftar();
+        }
+
+        function gambarUlangDaftar() {
+            var elemenWadah = document.getElementById("wadahDaftar");
+            elemenWadah.innerHTML = "";
+
+            kumpulanSiswa.forEach((siswa, urutan) => {
+                elemenWadah.innerHTML += `
+                    <div class="kotak-siswa">
+                        <p><strong>NIS:</strong> ${siswa.nis}</p>
+                        <p><strong>Nama:</strong> ${siswa.nama}</p>
+                        <p><strong>Rombel:</strong> ${siswa.rombel}</p>
+                        <p><strong>Nilai:</strong> ${siswa.nilai} (Grade: ${siswa.peringkat})</p>
+                        <p><strong>Status:</strong> ${siswa.keterangan}</p>
+                        <button class="tombol-ubah" onclick="ubahData(${urutan})">Edit</button>
+                        <button class="tombol-hapus" onclick="hapusData(${urutan})">Hapus</button>
+                    </div>
+                `;
+            });
+        }
+
+        function hapusData(urutan) {
+            kumpulanSiswa.splice(urutan, 1);
+            gambarUlangDaftar();
+        }
+
+        function ubahData(urutan) {
+            var dataLama = kumpulanSiswa[urutan];
+
+            document.getElementById("inputNis").value = dataLama.nis;
+            document.getElementById("inputNama").value = dataLama.nama;
+            document.getElementById("inputRombel").value = dataLama.rombel;
+            document.getElementById("inputNilai").value = dataLama.nilai;
+
+            hapusData(urutan);
+        }
+
+        function resetInput() {
+            document.getElementById("inputNis").value = "";
+            document.getElementById("inputNama").value = "";
+            document.getElementById("inputRombel").value = "";
+            document.getElementById("inputNilai").value = "";
+        }
+    </script>
+</body>
+</html>

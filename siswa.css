@@ -1,0 +1,82 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #7e6d6d;
+    font-family: Arial, sans-serif;
+    padding: 40px 10px;
+    margin: 0;
+}
+
+.judul-halaman {
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+.tabel-input {
+    background: #b4a3a3;
+    border-collapse: collapse;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(141, 115, 115, 0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+.tabel-input td {
+    padding: 10px;
+}
+
+.tabel-input input {
+    width: 95%;
+    padding: 8px;
+    border: 1px solid #bdc3c7;
+    border-radius: 4px;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 15px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.tombol-kirim {
+    background-color: #0bea68;
+    color: white;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.tombol-kirim:hover { background-color: #18db50; }
+
+.tombol-ubah { background-color: #0cce90; color: #333; }
+
+.tombol-ubah:hover { background-color: #06c7b0; }
+
+.tombol-hapus { background-color: #e74c3c; color: white; margin-left: 5px; }
+
+.tombol-hapus:hover { background-color: #c0392b; }
+
+.area-daftar {
+    width: 100%;
+    max-width: 420px;
+    margin-top: 30px;
+}
+
+.kotak-siswa {
+    background: #ffffff;
+    padding: 15px;
+    margin-top: 15px;
+    border-radius: 6px;
+    border-left: 6px solid #3498db;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+
+.kotak-siswa p {
+    margin: 4px 0;
+    font-size: 14px;
+    color: #34495e;
+}
