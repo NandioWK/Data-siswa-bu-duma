@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="siswa.css">
+</head>
+<body>
+
+<h2>Input Data Siswa</h2>
+
+    <div class="dataSiswa">
+        <input type="hidden" id="indeks_edit">
+
+        <div class="grup-input">
+            <label>NIS:</label>
+            <input type="text" id="nis_input" placeholder="Masukkan NIS">
+        </div>
+        <div class="grup-input">
+            <label>Nama:</label>
+            <input type="text" id="nama_input" placeholder="Masukkan Nama">
+        </div>
+        <div class="grup-input">
+            <label>Kelas:</label>
+            <input type="text" id="kelas_input" placeholder="Masukkan Kelas/Rombel">
+        </div>
+        <div class="grup-input">
+            <label>Nilai:</label>
+            <input type="number" id="nilai_input" placeholder="Masukkan Nilai">
+        </div>
+
+        <div class="grup-tombol">
+            <button id="tombol_tambah" onclick="tambahDataSiswa()">Tambah Data</button>
+            <button id="tombol_update" onclick="simpanPerubahan()" style="display:none">Simpen Perubahan</button>
+            <button id="tombol_batal" onclick="resetFormulir()" style="display:none">Gajadi</button>
+        </div>
+    </div>
+
+    <hr>
+
+    <h2>Data Siswa</h2>
+    <div class="wadah-tabel">
+        <table>
+            <thead>
+                <tr>
+                    <th>NIS</th>
+                    <th>Nama</th>
+                    <th>Kelas</th>
+                    <th>Nilai</th>
+                    <th>Grade</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="badan_tabel">
+                </tbody>
+        </table>
+    </div>
+
+    <script>
+        let daftar_siswa = JSON.parse(localStorage.getItem('database_siswa')) || [];
+
+        function tampilkanData() {
+            const badan_tabel = document.getElementById('badan_tabel');
+            badan_tabel.innerHTML = "";
+
+            daftar_siswa.forEach((siswa, indeks) => {
+                const baris = `
+                    <tr>
+                        <td>${siswa.nis}</td>
+                        <td>${siswa.nama}</td>
+                        <td>${siswa.kelas}</td>
+                        <td>${siswa.nilai}</td>
+                        <td><strong>${siswa.grade}</strong></td>
+                        <td><span class="badge ${siswa.status == 'Lulus' ? 'lulus' : 'gagal'}">${siswa.status}</span></td>
+                        <td>
+                            <button class="btn-edit" onclick="editDataSiswa(${indeks})">Edit</button>
+                            <button class="btn-hapus" onclick="hapusDataSiswa(${indeks})">Hapus</button>
+                        </td>
+                    </tr>
+                `;
+                badan_tabel.innerHTML += baris;
+            });
+
+            localStorage.setItem('database_siswa', JSON.stringify(daftar_siswa));
+        }
+
+        function hitungNilaiSiswa(nilai) {
+            let grade = "D";
+            if (nilai >= 90) grade = "A";
+            else if (nilai >= 80) grade = "B";
+            else if (nilai >= 75) grade = "C";
+
+            return {
+                grade: grade,
+                status: nilai >= 75 ? "Lulus" : "Tidak Lulus"
+            };
+        }
+
+        function tambahDataSiswa() {
+            const nis = document.getElementById('nis_input').value;
+            const nama = document.getElementById('nama_input').value;
+            const kelas = document.getElementById('kelas_input').value;
+            const nilai = Number(document.getElementById('nilai_input').value);
+
+            if (!nis || !nama || !nilai) return alert("isi data dulu biar berhasil");
+
+            const hasil = hitungNilaiSiswa(nilai);
+            const data_baru = {
+                nis: nis,
+                nama: nama,
+                kelas: kelas,
+                nilai: nilai,
+                grade: hasil.grade,
+                status: hasil.status
+            };
+
+            daftar_siswa.push(data_baru);
+            resetFormulir();
+            tampilkanData();
+        }
+
+        function editDataSiswa(indeks) {
+            const siswa = daftar_siswa[indeks];
+
+            document.getElementById('nis_input').value = siswa.nis;
+            document.getElementById('nama_input').value = siswa.nama;
+            document.getElementById('kelas_input').value = siswa.kelas;
+            document.getElementById('nilai_input').value = siswa.nilai;
+            document.getElementById('indeks_edit').value = indeks;
+
+            document.getElementById('tombol_tambah').style.display = 'none';
+            document.getElementById('tombol_update').style.display = 'inline-block';
+            document.getElementById('tombol_batal').style.display = 'inline-block';
+        }
+
+        function simpanPerubahan() {
+            const indeks = document.getElementById('indeks_edit').value;
+            const nilai = Number(document.getElementById('nilai_input').value);
+            const hasil = hitungNilaiSiswa(nilai);
+
+            daftar_siswa[indeks] = {
+                nis: document.getElementById('nis_input').value,
+                nama: document.getElementById('nama_input').value,
+                kelas: document.getElementById('kelas_input').value,
+                nilai: nilai,
+                grade: hasil.grade,
+                status: hasil.status
+            };
+
+            resetFormulir();
+            tampilkanData();
+        }
+
+        function hapusDataSiswa(indeks) {
+            if (confirm("Apakah anda yakin ingin menghapus data ini?")) {
+                daftar_siswa.splice(indeks, 1);
+                tampilkanData();
+            }
+        }
+
+        function resetFormulir() {
+            document.getElementById('nis_input').value = "";
+            document.getElementById('nama_input').value = "";
+            document.getElementById('kelas_input').value = "";
+            document.getElementById('nilai_input').value = "";
+
+            document.getElementById('tombol_tambah').style.display = 'inline-block';
+            document.getElementById('tombol_update').style.display = 'none';
+            document.getElementById('tombol_batal').style.display = 'none';
+        }
+
+        tampilkanData();
+    </script>
+
+</body>
+</html>
